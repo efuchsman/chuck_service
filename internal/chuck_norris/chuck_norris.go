@@ -8,7 +8,7 @@ import (
 )
 
 type ChuckJoke struct {
-	Categories []string `json:"categroies"`
+	Categories []string `json:"categories"`
 	CreatedAt  string   `json:"created_at"`
 	IconUrl    string   `json:"icon_url"`
 	Id         string   `json:"id"`
