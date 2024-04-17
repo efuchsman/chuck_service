@@ -3,17 +3,9 @@ package chucknorris
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
 
 	log "github.com/sirupsen/logrus"
 )
-
-type ChuckFunc interface {
-	RandomJoke(category string) (*ChuckJoke, error)
-}
-
-type ChuckService struct {
-}
 
 type ChuckJoke struct {
 	Categories []string `json:"categroies"`
@@ -28,7 +20,7 @@ var (
 	root = "https://api.chucknorris.io/jokes/"
 )
 
-func (c *ChuckService) RandomJoke(category string) (*ChuckJoke, error) {
+func (c *ChuckNorrisService) RandomJoke(category string) (*ChuckJoke, error) {
 	var endpoint string
 	var fields log.Fields
 	if category == "" {
@@ -38,7 +30,7 @@ func (c *ChuckService) RandomJoke(category string) (*ChuckJoke, error) {
 		endpoint = fmt.Sprintf("%srandom?category=%s", root, category)
 	}
 
-	response, err := http.Get(endpoint)
+	response, err := c.httpClient.Get(endpoint)
 	if err != nil {
 		log.WithFields(fields).Errorf("%+v", err)
 		return nil, err
@@ -53,10 +45,10 @@ func (c *ChuckService) RandomJoke(category string) (*ChuckJoke, error) {
 	return &chuckJoke, nil
 }
 
-func (c *ChuckService) Categories() (*[]string, error) {
+func (c *ChuckNorrisService) Categories() (*[]string, error) {
 	endpoint := root + "categories"
 
-	response, err := http.Get(endpoint)
+	response, err := c.httpClient.Get(endpoint)
 	if err != nil {
 		log.Errorf("Failed to fetch categories: %+v", err)
 		return nil, err

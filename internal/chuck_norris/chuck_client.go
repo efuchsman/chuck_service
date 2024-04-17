@@ -1,11 +1,22 @@
 package chucknorris
 
-type ChuckNorrisClient struct {
-	ChuckService ChuckService
+import "net/http"
+
+type Client interface {
+	RandomJoke(category string) (*ChuckJoke, error)
+	Categories() (*[]string, error)
 }
 
-func NewChuckNorrisClient(cs ChuckService) *ChuckNorrisClient {
-	return &ChuckNorrisClient{
-		ChuckService: cs,
+type HTTPClient interface {
+	Get(url string) (*http.Response, error)
+}
+
+type ChuckNorrisService struct {
+	httpClient HTTPClient
+}
+
+func NewChuckNorrisService(httpClient HTTPClient) *ChuckNorrisService {
+	return &ChuckNorrisService{
+		httpClient: httpClient,
 	}
 }
